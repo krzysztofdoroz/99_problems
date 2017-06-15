@@ -11,6 +11,11 @@ class S99Int(val v: Int) {
     }
     true
   }
+
+  final def isCoprimeTo(b : Int) : Boolean = {
+    gcd(v, b) == 1
+  }
+
 }
 
 object S99Int {
@@ -32,3 +37,5 @@ object S99Int {
 8.isPrime
 49.isPrime
 S99Int.gcd(36, 63)
+35.isCoprimeTo(64)
+35.isCoprimeTo(75)
