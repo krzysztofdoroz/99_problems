@@ -4,7 +4,7 @@ sealed abstract class Tree[+T] {
   def isMirrorOf[T](t : Tree[T]) : Boolean
   def isSymmetric : Boolean
   def addValue[U >: T <% Ordered[U]](v : U) : Tree[U]
-
+  def leafCount : Int
 }
 
 case class Node[+T](value: T, left: Tree[T], right: Tree[T]) extends Tree[T] {
@@ -29,6 +29,13 @@ case class Node[+T](value: T, left: Tree[T], right: Tree[T]) extends Tree[T] {
       Node(value, left.addValue(v), right)
     }
   }
+
+  override def leafCount : Int = {
+    (left, right) match {
+      case (End, End) => 1
+      case _ => left.leafCount + right.leafCount
+    }
+  }
 }
 
 case object End extends Tree[Nothing] {
@@ -44,6 +51,10 @@ case object End extends Tree[Nothing] {
 
   override def addValue[U <% Ordered[U]](value: U): Tree[U] = {
     Node(value)
+  }
+
+  override def leafCount : Int = {
+    return 0
   }
 }
 
@@ -77,3 +88,5 @@ Node('a', Node('c'), Node('c')).isSymmetric
 End.addValue(2).addValue(3).addValue(4)
 
 Tree.fromList(List(3, 2, 5, 7, 1))
+
+Node('x', Node('x'), End).leafCount
