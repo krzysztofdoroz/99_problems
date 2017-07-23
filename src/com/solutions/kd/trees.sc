@@ -5,6 +5,7 @@ sealed abstract class Tree[+T] {
   def isSymmetric : Boolean
   def addValue[U >: T <% Ordered[U]](v : U) : Tree[U]
   def leafCount : Int
+  def leafList : List[T]
 }
 
 case class Node[+T](value: T, left: Tree[T], right: Tree[T]) extends Tree[T] {
@@ -36,6 +37,14 @@ case class Node[+T](value: T, left: Tree[T], right: Tree[T]) extends Tree[T] {
       case _ => left.leafCount + right.leafCount
     }
   }
+
+  override def leafList: List[T] = {
+    (left, right) match {
+      case (End, End) => List(value)
+      case _ => left.leafList ++ right.leafList
+    }
+  }
+
 }
 
 case object End extends Tree[Nothing] {
@@ -53,9 +62,10 @@ case object End extends Tree[Nothing] {
     Node(value)
   }
 
-  override def leafCount : Int = {
-    return 0
-  }
+  override def leafCount : Int = 0
+
+  override def leafList: List[Nothing] = Nil
+
 }
 
 object Node {
@@ -90,3 +100,4 @@ End.addValue(2).addValue(3).addValue(4)
 Tree.fromList(List(3, 2, 5, 7, 1))
 
 Node('x', Node('x'), End).leafCount
+Node('a', Node('b'), Node('c', Node('d'), Node('e'))).leafList
